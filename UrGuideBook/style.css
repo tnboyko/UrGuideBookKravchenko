@@ -1,0 +1,68 @@
+
+#map {
+    height: 91%;
+    top:-20px;
+}
+
+/* Optional: Makes the sample page fill the window. */
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#logOut{
+    padding: 8.5px;
+}
+
+.controls {
+    margin-top: 20px;
+    border: 1px solid transparent;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height: 32px;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+#pac-input {
+    background-color: #fff;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 300px;
+}
+
+#pac-input:focus {
+    border-color: #4d90fe;
+}
+
+.loginBtn--signOut {
+    font-family: "Helvetica neue", Helvetica Neue, Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+    position: relative;
+    margin: 5px;
+    padding: 0 15px 0 46px;
+    border: none;
+    text-align: left;
+    line-height: 34px;
+    white-space: nowrap;
+    border-radius: 0.2em;
+    font-size: 16px;
+    color: #FFF;
+}
+.g-signin2{
+    margin-top: -8px;
+}
+
+#filter{
+    display: none;
+}
+#remove_filter{
+    display: none;
+}
