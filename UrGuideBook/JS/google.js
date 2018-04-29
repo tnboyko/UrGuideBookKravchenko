@@ -1,6 +1,5 @@
 //global variables
 var map;
-var circle;
 var markers = [];//array of markers
 var searchBox;
 var userLocation;
@@ -18,27 +17,16 @@ function initMap(){
 
     //marker for user's position
     var marker = new google.maps.Marker({
-       animation: google.maps.Animation.DROP,
-       title: "You are here!"
+        animation: google.maps.Animation.DROP,
+        title: "You are here!"
     });
 
-    /*
-    //circle for radius options setting
-    circle = new google.maps.Circle({
-        strokeColor: '#326d9f',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: '#326d9f',
-        fillOpacity: 0.2,
-        radius: 1000,
-        editable: false
+    var infoWindow = new google.maps.InfoWindow({
+        content: 'You are here!'
     });
-
-    //method to know if the spot is inside a circle
-    google.maps.Circle.prototype.contains = function(latLng) {
-        return this.getBounds().contains(latLng) && google.maps.geometry.spherical.computeDistanceBetween(this.getCenter(), latLng) <= this.getRadius();
-    };
-    */
+    marker.addListener('click', function () {
+        infoWindow.open(map, marker);
+    });
 
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
@@ -57,7 +45,7 @@ function initMap(){
         }
 
         markers.forEach(function(marker){
-           marker.setMap(null);
+            marker.setMap(null);
         });
         markers = [];
 
@@ -68,13 +56,15 @@ function initMap(){
                 console.log("Returned place contains no geometry");
                 return;
             }
+            /*
             var icon = {
                 url: place.icon,
                 size: new google.maps.Size(71, 71),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(17, 34),
-                scaledSize: new google.maps.Size(25, 25)
+                //scaledSize: new google.maps.Size(25, 25)
             };
+            */
+
+            var icon = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
 
             // Create a marker for each place.
             markers.push(new google.maps.Marker({
@@ -91,6 +81,13 @@ function initMap(){
                 bounds.extend(place.geometry.location);
             }
         });
+
+        var placeInfoWindow = new google.maps.InfoWindow();
+        for (var i = 0; i < markers.length; i++){
+            markers[i].addListener('click', function(){
+                populateInfoWindow(this, placeInfoWindow);
+            });
+        }
         map.fitBounds(bounds);
     });
 
@@ -108,10 +105,8 @@ function initMap(){
             };
             marker.setPosition(userLocation);
             map.setCenter(userLocation);
-            //circle.setCenter(userLocation);
             map.setZoom(13);
             marker.setMap(map);
-            //$("#filter").css("display","inline-block");
         }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -128,59 +123,16 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         'Error: Your browser doesn\'t support geolocation.');
 }
 
-/*
-function selectRadius() {
-    var button = $("#filter");
-    if (button.hasClass("unclicked")){
-        circle.setMap(map);
-        circle.setEditable(true);
-        button.html('Save');
-        button.removeClass('btn-primary');
-        button.addClass('btn-success');
-        $("#remove_filter").css("display", "inline-block");
+function populateInfoWindow(marker, infowindow) {
+    // Check to make sure the infowindow is not already opened on this marker.
+    if (infowindow.marker !== marker) {
+        infowindow.marker = marker;
+        infowindow.setContent('<h3>' + marker.title + '</h3>' + '<button class="btn btn-warning btn-s addToFavorites">Add to favorites</button>');
+        infowindow.open(map, marker);
+        // Make sure the marker property is cleared if the infowindow is closed.
+        infowindow.addListener('closeclick',function(){
+            infowindow.setMarker = null;
+        });
     }
-    else{
-        circle.setEditable(false);
-        button.html('Change options');
-        button.removeClass('btn-success');
-        button.addClass('btn-primary');
-        redrawMarkers();
-    }
-    button.toggleClass("unclicked");
-}
-function removeRadius(){
-    var button = $("#filter");
-    if (!button.hasClass("unclicked")){
-        button.removeClass('btn-success');
-        button.addClass('btn-primary');
-        button.addClass("unclicked");
-        circle.setCenter(userLocation);
-    }
-    removeMarkers();
-    circle.setMap(null);
-    button.html('Set radius options');
-    $("#remove_filter").css("display", "none");
 }
 
-//if radius options were changed
-function redrawMarkers(){
-    searchWithinCircle();
-}
-//check whether some markers belong to the selected area
-function searchWithinCircle(){
-    for (var i = 0; i < markers.length; i++){
-        if (!circle.contains(markers[i].position)){
-            markers[i].setMap(null);
-        }
-        else{
-            markers[i].setMap(map);
-        }
-    }
-}
-//for delete button call
-function removeMarkers(){
-    for (var i = 0; i < markers.length; i++){
-        markers[i].setMap(null);
-    }
-}
-*/
